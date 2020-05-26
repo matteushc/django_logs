@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.views import generic
 from rest_framework import viewsets
-from .serializers import HeroSerializer
-from .models import Hero
+from .serializers import LogsSerializer
+from .models import Logs
 from django.http import HttpResponse
 import datetime
 from datetime import date
@@ -10,9 +10,9 @@ import calendar
 from calendar import HTMLCalendar
 
 
-class HeroViewSet(viewsets.ModelViewSet):
-    queryset = Hero.objects.all().order_by('name')
-    serializer_class = HeroSerializer
+class LogsViewSet(viewsets.ModelViewSet):
+    queryset = Logs.objects.all().order_by('name_app')
+    serializer_class = LogsSerializer
 
 
 def current_datetime(request):
@@ -33,8 +33,8 @@ def index(request, year=date.today().year, month=date.today().month):
 
 # Create your views here.
 class IndexView(generic.ListView):
-    model = Hero
+    model = Logs
     template_name = 'base.html'
     
     def get_queryset(self):
-        return Hero.objects.all()
+        return Logs.objects.all()

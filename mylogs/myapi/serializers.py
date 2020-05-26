@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
-from .models import Hero
+from .models import Logs
 
-class HeroSerializer(serializers.HyperlinkedModelSerializer):
+class LogsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Hero
-        fields = ('name', 'alias')
+        model = Logs
+        fields = ('name_app', 'data', 'message', 'type_message')

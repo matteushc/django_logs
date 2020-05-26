@@ -8,8 +8,8 @@
     <body>
         <!-- <h1>{{ title }}</h1>
         <p>{% autoescape off %}{{ cal }}{% endautoescape %}</p> -->
-        {% for hero in hero_list %}
-            <li>{{hero.name}}</li>
+        {% for log in logs_list %}
+        <li><b>{{log.type_message}}</b></li> - {{log.name_app}} : {{log.message}}
         {% endfor %}
     </body>
 </html>

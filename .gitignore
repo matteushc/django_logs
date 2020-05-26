@@ -1,0 +1,7 @@
+# created by virtualenv automatically
+bin/
+lib/
+mylogs/myapi/__pycache__/
+mylogs/mylogs/__pycache__/
+mylogs/myapi/migrations/
+pyvenv.cfg

@@ -5,9 +5,11 @@ from .serializers import LogsSerializer
 from .models import Logs
 from django.http import HttpResponse
 import datetime
-from datetime import date
 import calendar
 from calendar import HTMLCalendar
+import requests
+
+URL_SOLR = ""
 
 
 class LogsViewSet(viewsets.ModelViewSet):
@@ -15,26 +17,38 @@ class LogsViewSet(viewsets.ModelViewSet):
     serializer_class = LogsSerializer
 
 
-def current_datetime(request):
-    now = datetime.datetime.now()
-    html = "<html><body>It is now %s.</body></html>" % now
-    return HttpResponse(html)
-
-
-def index(request, year=date.today().year, month=date.today().month):
-    year = int(year)
-    month = int(month)
-    if year < 1900 or year > 2099: year = date.today().year
-    month_name = calendar.month_name[month]
-    title = "MyClub Event Calendar - %s %s" % (month_name, year)
-    cal = HTMLCalendar().formatmonth(year, month)
-
-    return render(request, 'base.html', {'title': title, 'cal': cal})
-
-# Create your views here.
 class IndexView(generic.ListView):
     model = Logs
     template_name = 'base.html'
-    
+  
     def get_queryset(self):
         return Logs.objects.all()
+
+class LogsView(generic.TemplateView):
+
+    def get(self,request):
+        data_atual = datetime.datetime.now()
+        data_atual = data_atual.strftime("%Y-%m-%d")
+        url = f'{URL_SOLR}/select?q=date:"{data_atual}"&wt=json&indent=true'
+        r = requests.get(url)
+        logs = r.json()
+        logs_list = {'logs_list': logs['response']['docs']}
+        return render(request,'buscar.html',logs_list)
+
+
+def your_view(request):
+
+    if request.method == 'GET':
+
+        search_box = request.GET.get('search_box', None)
+        data_box = request.GET.get('data_box', None)
+        if search_box:
+            url = f'{URL_SOLR}/select?q=name:"{search_box}"&wt=json&indent=true'
+        elif data_box:
+            url = f'{URL_SOLR}/select?q=date:"{data_box}"&wt=json&indent=true'
+        else:
+            url = f"{URL_SOLR}/select?q=*:*&wt=json&indent=true&sort=asctime desc"
+        r = requests.get(url)
+        logs = r.json()
+        logs_list = {'logs_list': logs['response']['docs']}
+        return render(request,'buscar.html',logs_list)

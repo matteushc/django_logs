@@ -5,12 +5,11 @@ from . import views
 router = routers.DefaultRouter()
 router.register(r'logs', views.LogsViewSet)
 
-# Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
+
 urlpatterns = [
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('currentdate/', views.current_datetime),
-    path('index/', views.index),
     path('lista/', views.IndexView.as_view(), name='lista'),
+    path('buscar/', views.LogsView.as_view(), name='buscar'),
+    path('buscar_log/', views.your_view, name='buscar_log'),
 ]
